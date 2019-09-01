@@ -1,6 +1,7 @@
 {
     "require": {
         "guzzlehttp/guzzle": "^6.3",
-        "imangazaliev/didom": "^1.14"
+        "imangazaliev/didom": "^1.14",
+        "league/csv": "^9.3"
     }
 }

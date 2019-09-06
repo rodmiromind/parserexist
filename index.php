@@ -5,7 +5,7 @@ use DiDom\Document;
 use DiDom\ClassAttribute;
 use League\Csv\Writer;
 
-$arrayBrand = ['Brand'];
+$arrayBrands = [];
 $arrayTitles = ['Title'];
 $arrayParams = ['Patron'];
 $arrayPrices = ['Price'];
@@ -43,11 +43,23 @@ for ($i = 1; $i <= 1; $i++) {
 
       $documentCard = new Document($bodyCard);
 
-      $cardParamsTable = $documentCard->find('div.ZeForm');
-      foreach ($cardParamsTable as $param) {
-        Нужно выцеплять параметры из карточки товара
-      }
+      $cardParamsTable = $documentCard->find('div.ZeForm div span');
 
+      foreach ($cardParamsTable as $param) {
+        $f[] = strip_tags($param->first('span')->html());
+        for ($i = 0, $len = count($f); $i < $len; $i++) {
+            if ($f[$i] == 'Бренд') {
+                $arrayBrands['Brand'][] = $f[$i];
+            }
+        }
+        //   if ($param->find('span')->text() == 'Исполнение патрона') {
+        //       $arrayBrands['Brand'][] = $param->first('div div')->text();
+        //       print_r($arrayBrands);
+        //   } 
+      }
+      
+
+        // echo(string)($param);
       // $brands = $documentCard->find('div.wrap p');
       // foreach ($brands as  $brand) {
       //     $arrayBrands[] = strip_tags($brand);
@@ -66,11 +78,11 @@ for ($i = 1; $i <= 1; $i++) {
       }
     }
 
-for ($i = 0; $i < 15; $i++) {
-    $arrayForCsv[] = [$arrayTitles[$i], $arrayParams[$i], $arrayPrices[$i]];
-  }
+// for ($i = 0; $i < 15; $i++) {
+//     $arrayForCsv[] = [$arrayTitles[$i], $arrayParams[$i], $arrayPrices[$i]];
+//   }
 
 
-$writer = Writer::createFromPath('file.csv', 'w+');
-$writer->setDelimiter(';');
-$writer->insertAll($arrayForCsv);
+// $writer = Writer::createFromPath('file.csv', 'w+');
+// $writer->setDelimiter(';');
+// $writer->insertAll($arrayForCsv);

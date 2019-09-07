@@ -6,10 +6,10 @@ use DiDom\ClassAttribute;
 use League\Csv\Writer;
 
 $arrayBrands = [];
-$arrayTitles = ['Title'];
-$arrayParams = ['Patron'];
-$arrayPrices = ['Price'];
-//$arrayColumns = ['Title', 'Parameters', 'Price'];
+$arrayTitles = [];
+$arrayPatrons = [];
+$arrayPrices = [];
+$arrayColumns = ['Brand', 'Title', 'Patron'];
 
 for ($i = 1; $i <= 1; $i++) {
 
@@ -46,43 +46,31 @@ for ($i = 1; $i <= 1; $i++) {
       $cardParamsTable = $documentCard->find('div.ZeForm div span');
 
       foreach ($cardParamsTable as $param) {
-        $f[] = strip_tags($param->first('span')->html());
-        for ($i = 0, $len = count($f); $i < $len; $i++) {
-            if ($f[$i] == 'Бренд') {
-                $arrayBrands['Brand'][] = $f[$i];
-            }
+        switch ($param->text()) {
+            case 'Бренд':
+                $arrayBrands[] = $param->parent()->nextSibling()->text();
+                break;
+            case 'Артикул':
+                $arrayTitles[] = $param->parent()->nextSibling()->text();
+                break;
+            case 'Исполнение патрона':
+                $arrayPatrons[] = $param->parent()->nextSibling()->text();
+                break;
         }
-        //   if ($param->find('span')->text() == 'Исполнение патрона') {
-        //       $arrayBrands['Brand'][] = $param->first('div div')->text();
-        //       print_r($arrayBrands);
-        //   } 
       }
-      
 
-        // echo(string)($param);
-      // $brands = $documentCard->find('div.wrap p');
-      // foreach ($brands as  $brand) {
-      //     $arrayBrands[] = strip_tags($brand);
-      // }
-      // $titles = $documentCard->find('div.wrap p');
-      // foreach ($titles as  $title) {
-      //     $arrayTitles[] = strip_tags($title);
-      // }
-      // $params = $documentCard->find('div.desc span');
-      // foreach ($params as  $param) {
-      //     $arrayParams[] = strip_tags($param);
-      // }
-      // $prices = $documentCard->find('div.ucatprcdiv span.ucatprc');
-      // foreach ($prices as $price) {
-      //     $arrayPrices[] = strip_tags($price);
       }
     }
 
-// for ($i = 0; $i < 15; $i++) {
-//     $arrayForCsv[] = [$arrayTitles[$i], $arrayParams[$i], $arrayPrices[$i]];
-//   }
+
+$arrayForCsv[] = $arrayColumns;
+for ($i = 0; $i < 5; $i++) {
+    $arrayForCsv[] = [$arrayBrands[$i], $arrayTitles[$i], $arrayPatrons[$i]];
+}
+
+print_r($arrayForCsv);
 
 
-// $writer = Writer::createFromPath('file.csv', 'w+');
-// $writer->setDelimiter(';');
-// $writer->insertAll($arrayForCsv);
+$writer = Writer::createFromPath('file.csv', 'w+');
+$writer->setDelimiter(';');
+$writer->insertAll($arrayForCsv);

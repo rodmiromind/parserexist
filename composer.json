@@ -1,7 +1,15 @@
 {
+    "name": "trencher/parserexist",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Big C",
+            "email": "onetreearmy@gmail.com"
+        }
+    ],
     "require": {
-        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "~6.0",
         "imangazaliev/didom": "^1.14",
-        "league/csv": "^9.3"
+        "league/csv": "^9.0"
     }
 }

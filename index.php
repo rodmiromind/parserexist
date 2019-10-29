@@ -1,4 +1,6 @@
 <?php
+
+
 require 'vendor/autoload.php';
 use GuzzleHttp\Client;
 use DiDom\Document;
@@ -39,17 +41,27 @@ for ($i = 1; $i <= $numOfPages; $i++) {
 
         $bodyCard = null;
         if ($cardResponse->getStatusCode() == 200) {
-            $bodyCard = (string)$cardResponse->getBody();
+            $bodyCard = (string)$cardResponse->getBody(); //использование данного способа (string)нежелательно, т.к. в будущем он может быть удален.
         } else {
-            echo "Некорректный ответ сервера. Код статуса" . 
-            $cardResponse->getStatusCode();
+            echo "Некорректный ответ сервера - " . $cardResponse->getStatusCode();
         }
 
         $documentCard = new Document($bodyCard);
 
+        $a = $documentCard->find('div.pricerow .ucatprc');
+        foreach ($a as $item) {
+            $arrayPrices[] = $item->text();
+        }
+
         $cardParamsTable = $documentCard->find('div.ZeForm div span');
-        $arrayPrices[] = $documentCard->find('div.pricerow price ucatprc'); //здесь лечить
-        print_r($arrayPrices);
+        //var_dump($cardParamsTable);
+        foreach ($cardParamsTable as $param) {
+            $a = $param->text();
+            var_dump($a);
+        }
+        exit;
+
+
         foreach ($cardParamsTable as $param) {
             switch ($param->text()) {
             case 'Бренд':

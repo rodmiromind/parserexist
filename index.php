@@ -1,6 +1,7 @@
 <?php
 
-
+// запуск:
+// php index.php https://exist.ru/Catalog/Goods/15/66
 require 'vendor/autoload.php';
 use GuzzleHttp\Client;
 use DiDom\Document;
@@ -21,19 +22,20 @@ for ($i = 1; $i <= $numOfPages; $i++) {
     // парсинг html с листинга товаров
     $client = New Client();
     $response = $client->get($categoryParsing . '#&&p={$i}&F=');
-
+    
     $body = null;
     if ($response->getStatusCode() == 200) {
         $body = (string)$response->getBody();
     } else {
         echo "Некорректный ответ сервера. Код статуса" . $response->getStatusCode();
     }
+    
     $document = new Document($body);
-
+    
     // находим ссылки на каждую карточку
     $linksToCard = $document->find('div.cell2 a.catheader::attr(href)');
-
-    // парсинг html с карточек товара
+    
+    // парсинг html с карточки товара
     foreach ($linksToCard as $link) {
         $cardClient = New Client();
         $httpsLink = 'https://exist.ru' . $link;
@@ -47,14 +49,14 @@ for ($i = 1; $i <= $numOfPages; $i++) {
         }
 
         $documentCard = new Document($bodyCard);
-
+        //echo $documentCard;
         $a = $documentCard->find('div.pricerow .ucatprc');
         foreach ($a as $item) {
             $arrayPrices[] = $item->text();
         }
 
         $cardParamsTable = $documentCard->find('div.ZeForm div span');
-        //var_dump($cardParamsTable);
+        //print_r($cardParamsTable);
         foreach ($cardParamsTable as $param) {
             $a = $param->text();
             var_dump($a);
